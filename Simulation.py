@@ -1,5 +1,6 @@
 import simpy
 import random
+import numpy as np
 
 # Configuración del entorno de simulación
 env = simpy.Environment()
@@ -7,12 +8,13 @@ ram = simpy.Container(env, init = 100, capacity = 100)
 cpu = simpy.Resource(env, capacity = 1)
 random.seed(40)
 cant_Procesos = 25
+tiempos = []
 
 class Simulation:
 
     # Constructor de un proceso
-    def initialize(self, id, cant_Ram, cant_Instrucciones):
-        self.id = id
+    def __init__(self, id, cant_Ram, cant_Instrucciones):
+        self.id =id
         self.cant_Ram = cant_Ram
         self.cant_Instrucciones = cant_Instrucciones
 
@@ -31,7 +33,7 @@ def new(proceso_actual):
         yield ram.get(proceso_actual.cant_Ram)
         while proceso_actual.cant_Instrucciones > 0:
             yield from ready(proceso_actual)
-            numeroAleatorio = random.randint(1,2)
+            numeroAleatorio = random.randint(1, 2)
             if(numeroAleatorio == 1):
                 #Cola Esperando
                 yield env.timeout(2)
@@ -52,8 +54,13 @@ def running(proceso_actual):
     proceso_actual.cant_Instrucciones -= numero_intrucciones
     if proceso_actual.cant_Instrucciones <= 0:
         print(f"Proceso {proceso_actual.id} completado. En el timepo: {env.now}")
+        tiempos.append(env.now)
 
 # Funcion que ejecuta la simulacion
 def ejecutar():
     env.process(crear_Procesos())
     env.run()
+    promedio = np.mean(tiempos) 
+    des_vest = np.std(tiempos) 
+    print(f"Tiempo promedio de finalización: {promedio}")
+    print(f"Desviación estándar de los tiempos de finalización: {des_vest}")
