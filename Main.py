@@ -5,3 +5,8 @@
 
 import Simulation
 
+def main():
+    Simulation.ejecutar()
+
+if __name__ == "__main__":
+    main()  

@@ -1,6 +1,7 @@
 import simpy
 import random
 
+# Configuración del entorno de simulación
 env = simpy.Environment()
 ram = simpy.Container(env, init = 100, capacity = 100)
 cpu = simpy.Resource(env, capacity = 1)
@@ -48,6 +49,11 @@ def running(proceso_actual):
     yield env.timeout(1)
     numero_intrucciones = 3
     # Actualizar el contador de instrucciones del proceso
-    proceso_actual.cantInstrucciones -= numero_intrucciones
-    if proceso_actual.cantInstrucciones <= 0:
+    proceso_actual.cant_Instrucciones -= numero_intrucciones
+    if proceso_actual.cant_Instrucciones <= 0:
         print(f"Proceso {proceso_actual.id} completado. En el timepo: {env.now}")
+
+# Funcion que ejecuta la simulacion
+def ejecutar():
+    env.process(crear_Procesos())
+    env.run()
