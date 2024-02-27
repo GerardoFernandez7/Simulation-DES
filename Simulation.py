@@ -34,4 +34,11 @@ def new(proceso_actual):
             if(numeroAleatorio == 1):
                 #Cola Esperando
                 yield env.timeout(2)
-            ram.put(proceso_actual.cant_Ram)   
+            ram.put(proceso_actual.cant_Ram) 
+
+# El proceso está listo para correr pero debe esperar que lo atienda el CPU
+def ready(proceso_actual):
+    with cpu.request() as req:
+        yield req  
+        #Dirigirse a la etapa Running
+        yield from running(proceso_actual)  
