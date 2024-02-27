@@ -22,3 +22,16 @@ def crear_Procesos():
         yield env.timeout(random.expovariate(1.0 / intervalo))
         proceso = Simulation(i, random.randint(1, 10), random.randint(1, 10))
         env.process(new(proceso))
+
+# El proceso llega al sistema operativo pero debe esperar que se le asigne memoria RAM
+def new(proceso_actual):
+    with ram.get(proceso_actual.cant_Ram) as req:
+        yield req
+        yield ram.get(proceso_actual.cant_Ram)
+        while proceso_actual.cant_Instrucciones > 0:
+            yield from ready(proceso_actual)
+            numeroAleatorio = random.randint(1,2)
+            if(numeroAleatorio == 1):
+                #Cola Esperando
+                yield env.timeout(2)
+            ram.put(proceso_actual.cant_Ram)   
