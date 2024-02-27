@@ -42,3 +42,12 @@ def ready(proceso_actual):
         yield req  
         #Dirigirse a la etapa Running
         yield from running(proceso_actual)  
+
+# El CPU atiende al proceso por un tiempo limitado, suficiente para realizar solamente 3 instrucciones
+def running(proceso_actual):
+    yield env.timeout(1)
+    numero_intrucciones = 3
+    # Actualizar el contador de instrucciones del proceso
+    proceso_actual.cantInstrucciones -= numero_intrucciones
+    if proceso_actual.cantInstrucciones <= 0:
+        print(f"Proceso {proceso_actual.id} completado. En el timepo: {env.now}")
